@@ -276,13 +276,13 @@ end
 
 
 
-function M.select_menu_item(command)
+function M.select_menu_item(command, option)
   local idx = vim.fn.line(".")
   if vim.api.nvim_buf_get_changedtick(vim.fn.bufnr()) > 0 then
     M.on_menu_save()
   end
   close_menu(true)
-  M.nav_file(idx, command)
+  M.nav_file(idx, command, option)
   update_buffers()
 end
 
@@ -319,7 +319,7 @@ function M.on_menu_save()
   set_mark_list(get_menu_items())
 end
 
-function M.nav_file(id, command)
+function M.nav_file(id, command, option)
   if next(marks) == nil then
     initialize_marks()
   end
@@ -331,8 +331,10 @@ function M.nav_file(id, command)
   local mark = marks[id]
   if not mark then
     return
-  else
+  elseif option == nil then
     vim.cmd(command .. " " .. mark.filename)
+  else
+    vim.cmd(command .. " " .. option .. " " .. mark.filename)
   end
 end
 
